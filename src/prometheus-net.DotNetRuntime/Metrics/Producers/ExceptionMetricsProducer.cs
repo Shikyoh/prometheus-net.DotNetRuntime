@@ -13,14 +13,14 @@ namespace Prometheus.DotNetRuntime.Metrics.Producers
             _exceptionError = exceptionError;
             _runtimeCounters = runtimeCounters;
         }
-        
+
         internal Counter ExceptionCount { get; private set; }
-        
+
         public void RegisterMetrics(MetricFactory metrics)
         {
             if (!_exceptionError.Enabled && !_runtimeCounters.Enabled)
                 return;
-            
+
             if (_exceptionError.Enabled)
             {
                 ExceptionCount = metrics.CreateCounter(
@@ -29,7 +29,10 @@ namespace Prometheus.DotNetRuntime.Metrics.Producers
                     LabelType
                 );
 
-                _exceptionError.Events.ExceptionThrown += e => ExceptionCount.Labels(e.ExceptionType).Inc();
+                _exceptionError.Events.ExceptionThrown += e =>
+                {
+                    ExceptionCount.Labels(e.ExceptionType).Inc();
+                };
             }
             else if (_runtimeCounters.Enabled)
             {
@@ -38,7 +41,10 @@ namespace Prometheus.DotNetRuntime.Metrics.Producers
                     "Count of exceptions thrown"
                 );
 
-                _runtimeCounters.Events.ExceptionCount += e => ExceptionCount.Inc(e.IncrementedBy);
+                _runtimeCounters.Events.ExceptionCount += e =>
+                {
+                    ExceptionCount.Inc(e.IncrementedBy);
+                };
             }
         }
 
