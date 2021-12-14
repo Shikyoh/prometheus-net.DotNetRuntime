@@ -98,6 +98,7 @@ namespace Prometheus.DotNetRuntime.EventListening
                 
             return payload =>
             {
+
                 var eventDelegate = (MulticastDelegate)eventField.GetValue(this);
                 
                 // No-one is listening to this event
